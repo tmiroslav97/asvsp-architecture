@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  postgres_hue_db:
+    image: postgres:latest
+    container_name: postgres_hue_db
+    restart: always
+    environment:
+      - POSTGRES_USER=hue
+      - POSTGRES_PASSWORD=hue
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+
+  hue:
+    image: gethue/hue:latest
+    container_name: hue
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./config:/usr/share/hue/desktop/conf
+    depends_on:
+      - postgres_hue_db
+
+volumes:
+  postgres_db:
