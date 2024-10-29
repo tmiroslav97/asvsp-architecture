@@ -1,5 +1,10 @@
 version: "3"
 
+networks:
+  asvsp_network:
+    name: asvsp_network
+    external: true
+
 services:
   namenode:
     image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
@@ -13,6 +18,8 @@ services:
       - CLUSTER_NAME=test
     env_file:
       - .env
+    networks:
+      - asvsp_network
 
   datanode1:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
@@ -23,6 +30,8 @@ services:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - .env
+    networks:
+      - asvsp_network
 
   datanode2:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
@@ -33,6 +42,8 @@ services:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - .env
+    networks:
+      - asvsp_network
 
   resourcemanager:
     image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
@@ -43,6 +54,8 @@ services:
       SERVICE_PRECONDITION: "namenode:9870 datanode1:9864 datanode2:9864"
     env_file:
       - .env
+    networks:
+      - asvsp_network
 
   nodemanager1:
     image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
@@ -51,6 +64,8 @@ services:
       SERVICE_PRECONDITION: "namenode:9870 datanode1:9864 resourcemanager:8088"
     env_file:
       - .env
+    networks:
+      - asvsp_network
 
   nodemanager2:
     image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
@@ -59,16 +74,22 @@ services:
       SERVICE_PRECONDITION: "namenode:9870 datanode2:9864 resourcemanager:8088"
     env_file:
       - .env
+    networks:
+      - asvsp_network
   
   historyserver:
     image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
     container_name: historyserver
     environment:
       SERVICE_PRECONDITION: "namenode:9870 datanode1:9864 resourcemanager:8088"
+    ports:
+      - 8188:8188
     volumes:
       - hadoop_historyserver:/hadoop/yarn/timeline
     env_file:
       - .env
+    networks:
+      - asvsp_network
   
 volumes:
   hadoop_namenode:

@@ -1,0 +1,40 @@
+version: "3"
+
+networks:
+  asvsp_network:
+    name: asvsp_network
+    external: true
+
+services:
+  hive-metastore-postgresql:
+    image: bde2020/hive-metastore-postgresql:2.3.0
+    container_name: hive-metastore-postgresql
+    networks:
+      - asvsp_network
+    
+  hive-metastore:
+    image: bde2020/hive:2.3.2-postgresql-metastore
+    container_name: hive-metastore
+    env_file:
+      - .env
+    command: /opt/hive/bin/hive --service metastore
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870 datanode1:9864 datanode2:9864 hive-metastore-postgresql:5432"
+    ports:
+      - "9083:9083"
+    networks:
+      - asvsp_network
+
+  hive-server:
+    image: bde2020/hive:2.3.2-postgresql-metastore
+    container_name: hive-server
+    env_file:
+      - .env
+    environment:
+      HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
+      SERVICE_PRECONDITION: "hive-metastore:9083"
+    ports:
+      - "10000:10000"
+      - "10002:10002"
+    networks:
+      - asvsp_network

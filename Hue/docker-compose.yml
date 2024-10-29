@@ -1,5 +1,10 @@
 version: "3"
 
+networks:
+  asvsp_network:
+    name: asvsp_network
+    external: true
+
 services:
   postgres_hue_db:
     image: postgres:latest
@@ -12,16 +17,22 @@ services:
       - "5432:5432"
     volumes:
       - postgres_db:/var/lib/postgresql/data
+    networks:
+      - asvsp_network
 
   hue:
     image: gethue/hue:latest
     container_name: hue
+    hostname: hue
+    dns: 8.8.8.8
     ports:
       - "8888:8888"
     volumes:
       - ./config:/usr/share/hue/desktop/conf
     depends_on:
       - postgres_hue_db
+    networks:
+      - asvsp_network
 
 volumes:
   postgres_db:
