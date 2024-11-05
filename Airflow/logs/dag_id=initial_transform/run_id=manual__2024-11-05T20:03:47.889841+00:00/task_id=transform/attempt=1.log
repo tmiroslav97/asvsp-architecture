@@ -1,0 +1,31 @@
+[2024-11-05T20:03:48.607+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: initial_transform.transform manual__2024-11-05T20:03:47.889841+00:00 [queued]>
+[2024-11-05T20:03:48.621+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: initial_transform.transform manual__2024-11-05T20:03:47.889841+00:00 [queued]>
+[2024-11-05T20:03:48.622+0000] {taskinstance.py:1361} INFO - Starting attempt 1 of 1
+[2024-11-05T20:03:48.638+0000] {taskinstance.py:1382} INFO - Executing <Task(_PythonDecoratedOperator): transform> on 2024-11-05 20:03:47.889841+00:00
+[2024-11-05T20:03:48.648+0000] {standard_task_runner.py:57} INFO - Started process 368 to run task
+[2024-11-05T20:03:48.651+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'initial_transform', 'transform', 'manual__2024-11-05T20:03:47.889841+00:00', '--job-id', '7', '--raw', '--subdir', 'DAGS_FOLDER/initial_transform.py', '--cfg-path', '/tmp/tmp9u7nrn65']
+[2024-11-05T20:03:48.652+0000] {standard_task_runner.py:85} INFO - Job 7: Subtask transform
+[2024-11-05T20:03:48.712+0000] {task_command.py:416} INFO - Running <TaskInstance: initial_transform.transform manual__2024-11-05T20:03:47.889841+00:00 [running]> on host 02af4744f5fd
+[2024-11-05T20:03:48.806+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='initial_transform' AIRFLOW_CTX_TASK_ID='transform' AIRFLOW_CTX_EXECUTION_DATE='2024-11-05T20:03:47.889841+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2024-11-05T20:03:47.889841+00:00'
+[2024-11-05T20:03:48.819+0000] {connection.py:232} WARNING - Connection schemes (type: hive_cli) shall not contain '_' according to RFC3986.
+[2024-11-05T20:03:48.819+0000] {base.py:73} INFO - Using connection ID 'beeline_conn' for task execution.
+[2024-11-05T20:03:48.967+0000] {hive.py:475} INFO - USE `default`
+[2024-11-05T20:03:49.093+0000] {taskinstance.py:1937} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/decorators/base.py", line 221, in execute
+    return_value = super().execute(context)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 192, in execute
+    return_value = self.execute_callable()
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 209, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/initial_transform.py", line 22, in transform
+    res = conn.to_csv('select * from invites', 'output.csv')
+          ^^^^^^^^^^^
+AttributeError: 'Connection' object has no attribute 'to_csv'
+[2024-11-05T20:03:49.108+0000] {taskinstance.py:1400} INFO - Marking task as FAILED. dag_id=initial_transform, task_id=transform, execution_date=20241105T200347, start_date=20241105T200348, end_date=20241105T200349
+[2024-11-05T20:03:49.121+0000] {standard_task_runner.py:104} ERROR - Failed to execute job 7 for task transform ('Connection' object has no attribute 'to_csv'; 368)
+[2024-11-05T20:03:49.144+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 1
+[2024-11-05T20:03:49.168+0000] {taskinstance.py:2778} INFO - 0 downstream tasks scheduled from follow-on schedule check

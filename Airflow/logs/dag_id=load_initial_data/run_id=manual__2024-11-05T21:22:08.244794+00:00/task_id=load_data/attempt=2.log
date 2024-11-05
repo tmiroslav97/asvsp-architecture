@@ -1,0 +1,20 @@
+[2024-11-05T21:22:54.776+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: load_initial_data.load_data manual__2024-11-05T21:22:08.244794+00:00 [queued]>
+[2024-11-05T21:22:54.787+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: load_initial_data.load_data manual__2024-11-05T21:22:08.244794+00:00 [queued]>
+[2024-11-05T21:22:54.787+0000] {taskinstance.py:1361} INFO - Starting attempt 2 of 2
+[2024-11-05T21:22:54.800+0000] {taskinstance.py:1382} INFO - Executing <Task(SSHOperator): load_data> on 2024-11-05 21:22:08.244794+00:00
+[2024-11-05T21:22:54.809+0000] {standard_task_runner.py:57} INFO - Started process 1031 to run task
+[2024-11-05T21:22:54.812+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'load_initial_data', 'load_data', 'manual__2024-11-05T21:22:08.244794+00:00', '--job-id', '32', '--raw', '--subdir', 'DAGS_FOLDER/load_initial_data.py', '--cfg-path', '/tmp/tmptsfaas5l']
+[2024-11-05T21:22:54.816+0000] {standard_task_runner.py:85} INFO - Job 32: Subtask load_data
+[2024-11-05T21:22:54.876+0000] {task_command.py:416} INFO - Running <TaskInstance: load_initial_data.load_data manual__2024-11-05T21:22:08.244794+00:00 [running]> on host c5156f201d33
+[2024-11-05T21:22:54.966+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='load_initial_data' AIRFLOW_CTX_TASK_ID='load_data' AIRFLOW_CTX_EXECUTION_DATE='2024-11-05T21:22:08.244794+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2024-11-05T21:22:08.244794+00:00'
+[2024-11-05T21:22:54.968+0000] {ssh.py:152} INFO - Creating ssh_client
+[2024-11-05T21:22:54.968+0000] {ssh.py:300} WARNING - No Host Key Verification. This won't protect against Man-In-The-Middle attacks
+[2024-11-05T21:22:54.976+0000] {transport.py:1893} INFO - Connected (version 2.0, client OpenSSH_7.4p1)
+[2024-11-05T21:22:55.074+0000] {transport.py:1893} INFO - Authentication (password) successful!
+[2024-11-05T21:22:55.075+0000] {ssh.py:478} INFO - Running command: /opt/hadoop-3.2.1/bin/hdfs dfs -mkdir /data && /opt/hadoop-3.2.1/bin/hdfs dfs -copyFromLocal /data/sprogrami2016.csv /data && /opt/hadoop-3.2.1/bin/hdfs dfs -ls /data
+[2024-11-05T21:22:58.311+0000] {ssh.py:529} WARNING - 2024-11-05 21:22:58,310 INFO sasl.SaslDataTransferClient: SASL encryption trust check: localHostTrusted = false, remoteHostTrusted = false
+[2024-11-05T21:23:00.212+0000] {ssh.py:524} INFO - Found 1 items
+[2024-11-05T21:23:00.213+0000] {ssh.py:524} INFO - -rw-r--r--   3 root supergroup     703903 2024-11-05 21:22 /data/sprogrami2016.csv
+[2024-11-05T21:23:00.725+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=load_initial_data, task_id=load_data, execution_date=20241105T212208, start_date=20241105T212254, end_date=20241105T212300
+[2024-11-05T21:23:00.764+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2024-11-05T21:23:00.784+0000] {taskinstance.py:2778} INFO - 0 downstream tasks scheduled from follow-on schedule check

@@ -1,0 +1,27 @@
+[2024-11-05T14:34:45.308+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: initial_dag.name_node_task manual__2024-11-05T14:34:07.153882+00:00 [queued]>
+[2024-11-05T14:34:45.315+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: initial_dag.name_node_task manual__2024-11-05T14:34:07.153882+00:00 [queued]>
+[2024-11-05T14:34:45.315+0000] {taskinstance.py:1361} INFO - Starting attempt 2 of 2
+[2024-11-05T14:34:45.325+0000] {taskinstance.py:1382} INFO - Executing <Task(SSHOperator): name_node_task> on 2024-11-05 14:34:07.153882+00:00
+[2024-11-05T14:34:45.332+0000] {standard_task_runner.py:57} INFO - Started process 370 to run task
+[2024-11-05T14:34:45.335+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'initial_dag', 'name_node_task', 'manual__2024-11-05T14:34:07.153882+00:00', '--job-id', '5', '--raw', '--subdir', 'DAGS_FOLDER/initial-dag.py', '--cfg-path', '/tmp/tmpbon_vjcp']
+[2024-11-05T14:34:45.336+0000] {standard_task_runner.py:85} INFO - Job 5: Subtask name_node_task
+[2024-11-05T14:34:45.388+0000] {task_command.py:416} INFO - Running <TaskInstance: initial_dag.name_node_task manual__2024-11-05T14:34:07.153882+00:00 [running]> on host 63a05eb89395
+[2024-11-05T14:34:45.473+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='initial_dag' AIRFLOW_CTX_TASK_ID='name_node_task' AIRFLOW_CTX_EXECUTION_DATE='2024-11-05T14:34:07.153882+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2024-11-05T14:34:07.153882+00:00'
+[2024-11-05T14:34:45.474+0000] {ssh.py:152} INFO - Creating ssh_client
+[2024-11-05T14:34:45.475+0000] {ssh.py:300} WARNING - No Host Key Verification. This won't protect against Man-In-The-Middle attacks
+[2024-11-05T14:34:45.481+0000] {transport.py:1893} INFO - Connected (version 2.0, client OpenSSH_7.4p1)
+[2024-11-05T14:34:45.579+0000] {transport.py:1893} INFO - Authentication (password) successful!
+[2024-11-05T14:34:45.580+0000] {ssh.py:478} INFO - Running command: ls && ls -al && pwd && echo "Ovdje sam!"
+[2024-11-05T14:34:45.637+0000] {ssh.py:524} INFO - total 28
+[2024-11-05T14:34:45.637+0000] {ssh.py:524} INFO - drwx------ 1 root root 4096 Nov  5 14:33 .
+[2024-11-05T14:34:45.637+0000] {ssh.py:524} INFO - drwxr-xr-x 1 root root 4096 Nov  5 14:12 ..
+[2024-11-05T14:34:45.637+0000] {ssh.py:524} INFO - -rw------- 1 root root   10 Nov  5 14:33 .bash_history
+[2024-11-05T14:34:45.637+0000] {ssh.py:524} INFO - -rw-r--r-- 1 root root  570 Jan 31  2010 .bashrc
+[2024-11-05T14:34:45.638+0000] {ssh.py:524} INFO - drwx------ 1 root root 4096 Feb  4  2020 .gnupg
+[2024-11-05T14:34:45.638+0000] {ssh.py:524} INFO - -rw-r--r-- 1 root root  148 Aug 17  2015 .profile
+[2024-11-05T14:34:45.638+0000] {ssh.py:524} INFO - -rw------- 1 root root  850 Nov  5 14:29 .viminfo
+[2024-11-05T14:34:45.638+0000] {ssh.py:524} INFO - /root
+[2024-11-05T14:34:45.639+0000] {ssh.py:524} INFO - Ovdje sam!
+[2024-11-05T14:34:45.678+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=initial_dag, task_id=name_node_task, execution_date=20241105T143407, start_date=20241105T143445, end_date=20241105T143445
+[2024-11-05T14:34:45.708+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2024-11-05T14:34:45.729+0000] {taskinstance.py:2778} INFO - 0 downstream tasks scheduled from follow-on schedule check

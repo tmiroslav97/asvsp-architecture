@@ -1,8 +1,8 @@
 version: "3"
 
 networks:
-  asvsp_network:
-    name: asvsp_network
+  asvsp:
+    name: asvsp
     external: true
 
 services:
@@ -10,7 +10,7 @@ services:
     image: bde2020/hive-metastore-postgresql:2.3.0
     container_name: hive-metastore-postgresql
     networks:
-      - asvsp_network
+      - asvsp
     
   hive-metastore:
     image: bde2020/hive:2.3.2-postgresql-metastore
@@ -23,10 +23,11 @@ services:
     ports:
       - "9083:9083"
     networks:
-      - asvsp_network
+      - asvsp
 
   hive-server:
-    image: bde2020/hive:2.3.2-postgresql-metastore
+    #image: bde2020/hive:2.3.2-postgresql-metastore
+    build: .
     container_name: hive-server
     env_file:
       - .env
@@ -37,4 +38,4 @@ services:
       - "10000:10000"
       - "10002:10002"
     networks:
-      - asvsp_network
+      - asvsp

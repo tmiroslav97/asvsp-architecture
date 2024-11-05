@@ -1,25 +1,27 @@
 version: "3"
 
 networks:
-  asvsp_network:
-    name: asvsp_network
+  asvsp:
+    name: asvsp
     external: true
 
 services:
   namenode:
-    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    #image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    build: .
     container_name: namenode
     ports:
       - 9870:9870
       - 9000:9000
     volumes:
+      - ./data:/data
       - hadoop_namenode:/hadoop/dfs/name
     environment:
       - CLUSTER_NAME=test
     env_file:
       - .env
     networks:
-      - asvsp_network
+      - asvsp
 
   datanode1:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
@@ -31,7 +33,7 @@ services:
     env_file:
       - .env
     networks:
-      - asvsp_network
+      - asvsp
 
   datanode2:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
@@ -43,7 +45,7 @@ services:
     env_file:
       - .env
     networks:
-      - asvsp_network
+      - asvsp
 
   resourcemanager:
     image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
@@ -55,7 +57,7 @@ services:
     env_file:
       - .env
     networks:
-      - asvsp_network
+      - asvsp
 
   nodemanager1:
     image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
@@ -65,7 +67,7 @@ services:
     env_file:
       - .env
     networks:
-      - asvsp_network
+      - asvsp
 
   nodemanager2:
     image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
@@ -75,7 +77,7 @@ services:
     env_file:
       - .env
     networks:
-      - asvsp_network
+      - asvsp
   
   historyserver:
     image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
@@ -89,7 +91,7 @@ services:
     env_file:
       - .env
     networks:
-      - asvsp_network
+      - asvsp
   
 volumes:
   hadoop_namenode:
