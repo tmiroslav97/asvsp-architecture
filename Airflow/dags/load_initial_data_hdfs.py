@@ -7,14 +7,14 @@ from airflow.decorators import dag
 
 
 @dag(
-    dag_id="load_initial_data",
+    dag_id="load_initial_data_hdfs",
     description="DAG in charge of submiting data.",
     start_date=datetime(2024, 11, 5),
     schedule_interval=None,
     max_active_runs=1,
     catchup=False,
 )
-def load_initial_data():
+def load_initial_data_hdfs():
     name_node_ops = SSHOperator(
         task_id="load_data",
         ssh_conn_id="name_node_ssh_conn",
@@ -28,4 +28,4 @@ def load_initial_data():
     name_node_ops
 
 
-load_initial_data()
+load_initial_data_hdfs()

@@ -6,6 +6,9 @@ read -p "> Delete volumes? [y/N] " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
+    echo ">> Shutting down Metabase"
+    docker compose -f Metabase/docker-compose.yml down -v
+
     echo ">> Shutting down Hue"
     docker compose -f Hue/docker-compose.yml down -v
 
@@ -22,6 +25,9 @@ then
     docker compose -f Hadoop/docker-compose.yml down -v
 
 else
+    echo ">> Shutting down Metabase"
+    docker compose -f Metabase/docker-compose.yml down -v
+    
     echo ">> Shutting down Hue"
     docker compose -f Hue/docker-compose.yml down
 

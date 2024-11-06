@@ -13,13 +13,13 @@ RUN apt update && \
 ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64/
 RUN export JAVA_HOME
 
-RUN mkdir -p /opt/spark
-COPY spark-3.5.0-bin-hadoop3.tgz /opt/spark
-RUN tar -xvzf /opt/spark/spark-3.5.0-bin-hadoop3.tgz --strip-components=1 -C /opt/spark
-RUN rm /opt/spark/spark-3.5.0-bin-hadoop3.tgz
-ENV SPARK_HOME /opt/spark
-RUN export SPARK_HOME
-RUN export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
+#RUN mkdir -p /opt/spark
+#COPY spark-3.5.0-bin-hadoop3.tgz /opt/spark
+#RUN tar -xvzf /opt/spark/spark-3.5.0-bin-hadoop3.tgz --strip-components=1 -C /opt/spark
+#RUN rm /opt/spark/spark-3.5.0-bin-hadoop3.tgz
+#ENV SPARK_HOME /opt/spark
+#RUN export SPARK_HOME
+#RUN export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
 
 RUN mkdir /shared && chown -R airflow /shared
 

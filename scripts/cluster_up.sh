@@ -19,6 +19,9 @@ docker compose -f Airflow/docker-compose.yml up -d
 echo ">> Starting up Hue"
 docker compose -f Hue/docker-compose.yml up -d
 
+echo ">> Starting up Metabase"
+docker compose -f Metabase/docker-compose.yml up -d
+
 echo "> Services started sleeping for 25 seconds"
 
 sleep 25

@@ -7,14 +7,14 @@ from airflow.decorators import dag, task
 
 
 @dag(
-    dag_id="initial_transform",
+    dag_id="hive_transform",
     description="DAG in charge of submiting data.",
     start_date=datetime(2024, 11, 5),
     schedule_interval=None,
     max_active_runs=1,
     catchup=False,
 )
-def initial_transform():
+def hive_transform():
 
     @task
     def create_table():
@@ -41,7 +41,7 @@ def initial_transform():
             print(e)
 
     @task
-    def describe_table():
+    def query_table():
         hive_hook = HiveServer2Hook(hiveserver2_conn_id="HIVE_CONNECTION")
         try:
             res = hive_hook.get_records("select * from programi")
@@ -62,7 +62,7 @@ def initial_transform():
         ),
     )
 
-    create_table() >> load_data() >> describe_table()
+    create_table() >> load_data() >> query_table()
 
 
-initial_transform()
+hive_transform()
