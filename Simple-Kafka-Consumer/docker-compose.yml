@@ -1,0 +1,25 @@
+version: "3"
+
+networks:
+  asvsp:
+    name: asvsp
+    external: true
+
+services:
+  consumer:
+    build:
+      context: .
+    networks:
+      - asvsp
+    volumes:
+      - .:/app
+      - ./logs:/app/logs
+    environment:
+      BOOTSTRAP_SERVERS: "broker1:9092"
+      CONSUMER_CONFIG_ENABLE_AUTO_COMMIT: 'False'
+      CONSUMER_CONFIG_POLL_TIMEOUT: "2"
+      KAFKA_RAW_TOPIC: "example_kafka_consumer.raw"
+      KAFKA_ENRICHED_TOPIC: "example_kafka_consumer.enriched"
+      KAFKA_ENRICHED_FAILED_TOPIC: "example_kafka_consumer.enriched.failed"
+      LOG_LEVEL: "debug"
+    command: ["python3", "-u", "/app/main.py"]

@@ -19,7 +19,7 @@ function exists_in_list() {
     return 1
 }
 
-list_of_services="hdfs hive spark airflow hue metabase kafka data_generator"
+list_of_services="hdfs hive spark airflow hue metabase kafka data_generator locust simple_kafka_consumer"
 for service in "$@"
 do
     if exists_in_list "$list_of_services" " " $service; then
@@ -71,15 +71,26 @@ do
             docker compose -f Metabase/docker-compose.yml up -d
             ;;
         'kafka')
-            # echo ">> Starting up Kafka"
-            # docker compose -f Kafka/docker-compose.yml up -d
-            # sleep 15
+            echo ">> Starting up Kafka"
+            docker compose -f Kafka/docker-compose.yml up -d
+            sleep 15
             cmd='bash -c "/opt/kafka/config/setupObjects.sh"'
             docker exec -it kafka-broker1-1 $cmd
             ;;
         'data_generator')
             echo ">> Starting up Data Generator"
             docker compose -f Data-Generator/docker-compose.yml up -d
+            ;;
+        'locust')
+            echo ">> Starting up Locust"
+            echo ">> Note: You can scale the number of Locust workers"
+            docker compose -f Locust/docker-compose.yml up --scale locust-worker=8 -d
+            ;;
+        'simple_kafka_consumer')
+            echo ">> Starting up Simple Kafka Consumer"
+            echo ">> Note: You can scale the number of consumers"
+            docker compose -f Simple-Kafka-Consumer/docker-compose.yml up --scale consumer=2 -d
+            # docker-compose -f Simple-Kafka-Consumer/docker-compose.yml up --scale consumer=1 -d --no-recreate
             ;;
         *)
             echo ">> Service not recognized, skipping"

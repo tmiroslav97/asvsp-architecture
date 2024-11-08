@@ -30,9 +30,15 @@ then
     echo ">> Shutting down Data Generator"
     docker compose -f Data-Generator/docker-compose.yml down -v
 
+    echo ">> Shutting down Locust"
+    docker compose -f Locust/docker-compose.yml down -v
+    
+    echo ">> Shutting down Simple Kafka Consumer"
+    docker compose -f Simple-Kafka-Consumer/docker-compose.yml down -v
+
 else
     echo ">> Shutting down Metabase"
-    docker compose -f Metabase/docker-compose.yml down -v
+    docker compose -f Metabase/docker-compose.yml down
     
     echo ">> Shutting down Hue"
     docker compose -f Hue/docker-compose.yml down
@@ -55,6 +61,11 @@ else
     echo ">> Shutting down Data Generator"
     docker compose -f Data-Generator/docker-compose.yml down
 
+    echo ">> Shutting down Locust"
+    docker compose -f Locust/docker-compose.yml down
+
+    echo ">> Shutting down Simple Kafka Consumer"
+    docker compose -f Simple-Kafka-Consumer/docker-compose.yml down
 fi
 
 echo "> Deleting 'asvsp' network"
