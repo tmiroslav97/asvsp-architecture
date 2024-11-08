@@ -1,0 +1,69 @@
+version: "3"
+
+volumes:
+  broker1:
+  broker2:
+
+networks:
+  asvsp:
+    name: asvsp
+    external: true
+
+services:
+  broker1:
+    image: 'bitnami/kafka:3.8.1'
+    environment:
+      KAFKA_ENABLE_KRAFT: yes
+      KAFKA_CFG_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,PLAINTEXT_HOST://:29092
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://broker1:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_CFG_BROKER_ID: 1
+      KAFKA_CFG_NODE_ID: 1
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: '1@broker1:9093,2@broker2:9093'
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_KRAFT_CLUSTER_ID: r4zt_wrqTRuT7W2NJsB_GA
+    networks:
+      - asvsp
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    volumes:
+      - broker1:/bitnami/kafka
+      - ./config:/opt/kafka/config
+
+  broker2:
+    image: 'bitnami/kafka:3.8.1'
+    environment:
+      KAFKA_ENABLE_KRAFT: yes
+      KAFKA_CFG_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,PLAINTEXT_HOST://:29093
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://broker2:9092,PLAINTEXT_HOST://localhost:29093
+      KAFKA_CFG_BROKER_ID: 2
+      KAFKA_CFG_NODE_ID: 2
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: '1@broker1:9093,2@broker2:9093'
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_KRAFT_CLUSTER_ID: r4zt_wrqTRuT7W2NJsB_GA
+    networks:
+      - asvsp
+    ports:
+      - "9093:9092"
+      - "29093:29093"
+    volumes:
+      - broker2:/bitnami/kafka
+
+  kafka-ui:
+    image: 'provectuslabs/kafka-ui:v0.7.2'
+    depends_on:
+      - broker1
+      - broker2
+    ports:
+      - "8092:8080"
+    networks:
+      - asvsp
+    environment:
+      KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: 'broker1:9092,broker2:9092'
+      KAFKA_CLUSTERS_0_NAME: local-kafka-cluster

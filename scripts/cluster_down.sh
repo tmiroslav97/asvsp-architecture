@@ -24,6 +24,12 @@ then
     echo ">> Shutting down Hadoop"
     docker compose -f Hadoop/docker-compose.yml down -v
 
+    echo ">> Shutting down Kafka"
+    docker compose -f Kafka/docker-compose.yml down -v
+
+    echo ">> Shutting down Data Generator"
+    docker compose -f Data-Generator/docker-compose.yml down -v
+
 else
     echo ">> Shutting down Metabase"
     docker compose -f Metabase/docker-compose.yml down -v
@@ -42,6 +48,12 @@ else
 
     echo ">> Shutting down Hadoop"
     docker compose -f Hadoop/docker-compose.yml down
+
+    echo ">> Shutting down Kafka"
+    docker compose -f Kafka/docker-compose.yml down
+
+    echo ">> Shutting down Data Generator"
+    docker compose -f Data-Generator/docker-compose.yml down
 
 fi
 

@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  sniffer-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "sniffer_app.py", "arg1", "arg2"]
+    network_mode: "host"
+    privileged: true
+    volumes:
+      - .:/app
+      - ./output:/app/output
+      - ./logs:/app/logs
