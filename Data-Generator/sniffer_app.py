@@ -56,11 +56,6 @@ class KafkaTopicWriter(Writer):
             logger.error("An error ocurred while sending data to Kafka topic")
             logger.exception(e)
 
-    def __del__(self):
-        if self.writer:
-            logger.info("Closing the resource")
-            self.writer.close()
-
 
 def get_packet_layers(packet):
     layers = []
@@ -87,7 +82,7 @@ def extract_packet_data(packet):
         current_layer_dict = {k: v for (k, v) in current_layer._command(json=True)}
 
         if packet_layer == "TCP":
-            if current_layer_dict["dport"] == 80:  # Proveriti da li treba i sport...
+            if current_layer_dict["dport"] in [80, 8091, 8092] or current_layer_dict["sport"] in [80, 8091, 8092]:  # Proveriti da li treba i sport...
                 current_layer_dict["protocol"] = "HTTP"
             elif (
                 current_layer_dict["dport"] == 443 or current_layer_dict["sport"] == 443
@@ -116,11 +111,11 @@ def main():
     # TODO: print current setup
     # TODO: vars to global consts?
     # show_interfaces()  # TODO: use this to see which interfaces are available
-    network_interface = "enp2s0"  # TODO: change - selected interface to sniff
-    packet_count = 3000  # Number of packets to process
-    output_mode = 'Kafka'  # TODO: take this from a cli arg
+    network_interfaces = ["enp2s0", "lo"]  # TODO: change - selected interface to sniff
+    packet_count = 30  # Number of packets to process
+    output_mode = 'File'  # TODO: take this from a cli arg
     if output_mode == 'File':
-        writer = FileWriter("./output/packets.jsonl", mode="a")
+        writer = FileWriter("./output/packets_new_multi.jsonl", mode="a")
     elif output_mode == 'Kafka':
         writer = KafkaTopicWriter(topic_name='network_data')
     
@@ -131,7 +126,7 @@ def main():
         partial_packet_callback = partial(packet_callback, writer=writer)
 
         for i in range(1, 30):  # TODO delete this
-            sniff(prn=partial_packet_callback, iface=network_interface, count=packet_count, store=False)
+            sniff(prn=partial_packet_callback, iface=network_interfaces, count=packet_count, store=False)
     except Exception as e:
         logger.error("A top level exception has ocurred!")
         logger.exception(e)
