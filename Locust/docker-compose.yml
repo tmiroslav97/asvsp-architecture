@@ -1,0 +1,34 @@
+version: "3"
+
+networks:
+  asvsp:
+    name: asvsp
+    external: true
+
+services:
+  locust-main:
+    image: locustio/locust
+    build:
+      context: .
+    
+    networks:
+      - asvsp
+    ports:
+     - "8091:8089"
+    volumes:
+      - ./locustfiles:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --master -H http://locust-main:8089  # On windows, add 'locust' in front of the command
+    environment:
+      - LOCUST_KAFKA_SERVERS=broker1:9092
+
+  locust-worker:
+    image: locustio/locust
+    build:
+      context: .
+    networks:
+      - asvsp
+    volumes:
+      - ./locustfiles/:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --worker --master-host locust-main  # On windows, add 'locust' in front of the command
+    environment:
+      - LOCUST_KAFKA_SERVERS=broker1:9092

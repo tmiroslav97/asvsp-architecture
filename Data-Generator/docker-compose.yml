@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  sniffer-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "sniffer_app.py"]
+    environment:
+      DATA_GENERATOR_NETWORK_INTERFACES: "enp2s0,lo"  # Check available interfaces
+      DATA_GENERATOR_PACKET_COUNT: "500"
+      DATA_GENERATOR_OUTPUT_MODE: "Kafka" # Kafka / File
+      DATA_GENERATOR_KAFKA_BOOTSTRAP_SERVERS: "localhost:29092,localhost:29093"
+      DATA_GENERATOR_KAFKA_TOPIC: "network_data"
+    network_mode: "host"
+    privileged: true
+    volumes:
+      - .:/app
+      - ./output:/app/output
+      - ./logs:/app/logs

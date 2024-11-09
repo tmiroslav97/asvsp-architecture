@@ -1,0 +1,5 @@
+confluent-kafka==1.7.0
+python-dotenv==0.19.1
+user-agents==2.2.0
+python-json-logger==2.0.2
+jsonpath-ng==1.5.3
