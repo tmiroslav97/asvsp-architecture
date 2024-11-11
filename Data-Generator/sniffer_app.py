@@ -25,6 +25,7 @@ DATA_GENERATOR_PACKET_COUNT = int(os.getenv("DATA_GENERATOR_PACKET_COUNT", "300"
 DATA_GENERATOR_OUTPUT_MODE = os.getenv("DATA_GENERATOR_OUTPUT_MODE", "Kafka")
 DATA_GENERATOR_KAFKA_BOOTSTRAP_SERVERS = os.getenv("DATA_GENERATOR_KAFKA_BOOTSTRAP_SERVERS", "localhost:29092,localhost:29093")
 DATA_GENERATOR_KAFKA_TOPIC = os.getenv("DATA_GENERATOR_KAFKA_TOPIC", "network_data")
+DATA_GENERATOR_FILE_PATH = os.getenv("DATA_GENERATOR_FILE_PATH", "./output/packets.jsonl")
 
 
 class Writer(ABC):
@@ -120,12 +121,13 @@ def packet_callback(packet: Packet, extractor: PacketDataExtractor, writer: Writ
 def main():
     logger.info("Sniffing App started")
     logger.info(f"Starting up with the following setup: NETWORK_INTERFACES: {str(DATA_GENERATOR_NETWORK_INTERFACES)}, OUTPUT_MODE: {DATA_GENERATOR_OUTPUT_MODE}, PACKET_COUNT: {DATA_GENERATOR_PACKET_COUNT}")
-    # show_interfaces()  # TODO: use this to see which interfaces are available
 
     extractor = PacketDataExtractor()
 
     if DATA_GENERATOR_OUTPUT_MODE == 'File':
-        writer = JsonLinesFileWriter("./prepared_data/packets_new_multi.jsonl", mode="a")
+        logger.info("Using File output mode, output file path: {DATA_GENERATOR_FILE_PATH}")
+
+        writer = JsonLinesFileWriter(DATA_GENERATOR_FILE_PATH, mode="a")
     elif DATA_GENERATOR_OUTPUT_MODE == 'Kafka':
         logger.info("Using Kafka output mode, bootstrap servers: {DATA_GENERATOR_KAFKA_BOOTSTRAP_SERVERS}, kafka topic: {DATA_GENERATOR_KAFKA_TOPIC}")
 
