@@ -38,25 +38,25 @@ do
     case $service in
         'hdfs')
             echo ">> Starting up HDFS"
-            docker compose -f Hadoop/docker-compose.yml up -d
+            docker-compose -f Hadoop/docker-compose.yml up -d
             sleep 5
             docker exec -it namenode $ssh_server_startup_cmd
             ;;
         'hive')
             echo ">> Starting up Hive"
-            docker compose -f Hive/docker-compose.yml up -d
+            docker-compose -f Hive/docker-compose.yml up -d
             sleep 15
             docker exec -it hive-server $ssh_server_startup_cmd
             ;;
         'spark')
             echo ">> Starting up Apache Spark"
-            docker compose -f Apache-Spark/docker-compose.yml up -d
+            docker-compose -f Apache-Spark/docker-compose.yml up -d
             sleep 15
             docker exec -it spark-master $ssh_server_startup_cmd
             ;;
         'airflow')
             echo ">> Starting up Airflow"
-            docker compose -f Airflow/docker-compose.yml up -d
+            docker-compose -f Airflow/docker-compose.yml up -d
             sleep 25
             echo ">> Setting up Airflow objects"
             cmd='bash -c "/opt/airflow/config/setupObjects.sh"'
@@ -64,32 +64,32 @@ do
             ;;
         'hue')
             echo ">> Starting up Hue"
-            docker compose -f Hue/docker-compose.yml up -d
+            docker-compose -f Hue/docker-compose.yml up -d
             ;;
         'metabase')
             echo ">> Starting up Metabase"
-            docker compose -f Metabase/docker-compose.yml up -d
+            docker-compose -f Metabase/docker-compose.yml up -d
             ;;
         'kafka')
             echo ">> Starting up Kafka"
-            docker compose -f Kafka/docker-compose.yml up -d
+            docker-compose -f Kafka/docker-compose.yml up -d
             sleep 15
             cmd='bash -c "/opt/kafka/config/setupObjects.sh"'
-            docker exec -it kafka-broker1-1 $cmd
+            docker exec -it kafka_broker1_1 $cmd
             ;;
         'data_generator')
             echo ">> Starting up Data Generator"
-            docker compose -f Data-Generator/docker-compose.yml up -d
+            docker-compose -f Data-Generator/docker-compose.yml up -d
             ;;
         'locust')
             echo ">> Starting up Locust"
             echo ">> Note: You can scale the number of Locust workers"
-            docker compose -f Locust/docker-compose.yml up --scale locust-worker=8 -d
+            docker-compose -f Locust/docker-compose.yml up --scale locust-worker=8 -d
             ;;
         'simple_kafka_consumer')
             echo ">> Starting up Simple Kafka Consumer"
             echo ">> Note: You can scale the number of consumers"
-            docker compose -f Simple-Kafka-Consumer/docker-compose.yml up --scale consumer=2 -d
+            docker-compose -f Simple-Kafka-Consumer/docker-compose.yml up --scale consumer=2 -d
             # docker-compose -f Simple-Kafka-Consumer/docker-compose.yml up --scale consumer=1 -d --no-recreate
             ;;
         *)

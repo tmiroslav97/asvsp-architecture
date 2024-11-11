@@ -44,11 +44,10 @@
 #
 # Feel free to modify this file to suit your needs.
 ---
-version: '3.8'
+version: '3'
 
 networks:
   asvsp:
-    name: asvsp
     external: true
 
 x-airflow-common:
