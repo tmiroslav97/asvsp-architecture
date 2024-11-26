@@ -5,7 +5,7 @@
 Projekat je napravljen za potrebe predmeta arhitekture sistema velikih skupova podataka. Ideja je da se u toku semestra na terminima vježbi uvede jedan po jedan servis koji čini ovaj projekat. Cjelokupan projekat (klaster) napravljen je tako da predstavlja zaokruženu cjelinu onoga što se sa praktične strane obrađuje na predmetu i da posluži kao primjer kako bi trebala da izgleda arhitektura projekta kojeg studenti implementiraju na predmetu.
 
 **Napomena:**
-* Zbog različitih okruženja u laboratoriji i na personalnim računarima održavaće se dvije odvojene grane
+* zbog različitih okruženja u laboratoriji i na personalnim računarima održavaće se dvije odvojene grane
     * main - za upotrebu na personalnim računarima
     * classroom - za upotrebu na računarima u laboratoriji
 
@@ -15,7 +15,7 @@ Klaster se pokreće tako što se nakon pozicioniranja u root projekta unutar ter
 
 ```./scripts/cluster_up.sh <list_of_services>```
 
-Argument <list_of_services> je obavezan i ukoliko se ne navede nijedan servis koji čini ovaj klaster neće biti pokrenut. Moguće vrijednosti su: hdfs, hue, hive, spark, airflow, metabase, kafka, data_generator, locust i simple_kafka_consumer. Navedene vrijednosti se odnose na sledeće servise u klasteru:
+Argument <list_of_services> je obavezan i ukoliko se ne navede nijedan servis koji čini ovaj klaster neće biti pokrenut. Moguće vrijednosti su: hdfs, hue, hive, spark, airflow, metabase, kafka, data_generator, locust i simple_kafka_consumer. Argumenti se odvajaju razmakom. Navedene vrijednosti se odnose na sledeće servise u klasteru:
 * hdfs - Hadoop
 * hue - Hue
 * hive - Hive
