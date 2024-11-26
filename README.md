@@ -1,4 +1,4 @@
-# ASVSP architecture
+# ASVSP
 
 ## Osnovne informacije
 
