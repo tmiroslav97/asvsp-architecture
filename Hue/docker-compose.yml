@@ -20,14 +20,16 @@ services:
       - asvsp
 
   hue:
-    image: gethue/hue:latest
+    #image: gethue/hue:latest
+    build: .
     container_name: hue
     hostname: hue
     dns: 8.8.8.8
     ports:
       - "8888:8888"
-    volumes:
-      - ./config:/usr/share/hue/desktop/conf
+    # bind mount config (not working on all OS problems with permission)
+    # volumes:
+      # - ./config:/usr/share/hue/desktop/conf
     depends_on:
       - postgres-hue-db
     networks:
