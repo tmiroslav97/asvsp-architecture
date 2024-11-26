@@ -27,7 +27,7 @@ Argument <list_of_services> je obavezan i ukoliko se ne navede nijedan servis ko
 * locust - Locust
 * simple_kafka_consumer - Simple-Kafka-Consumer
 
-Klaster se pokreće tako što se nakon pozicioniranja u root projekta unutar terminala (linux terminal, git bash, powershell i sl.) unese naredba koja će da ugasi sve pokrenute servise u klasteru i opciono da obriše sve docker kontejnere vezane za servise:
+Klaster se gasi tako što se nakon pozicioniranja u root projekta unutar terminala (linux terminal, git bash, powershell i sl.) unese naredba koja će da ugasi sve pokrenute servise u klasteru i opciono da obriše sve docker kontejnere vezane za servise:
 
 ```./scripts/cluster_down.sh```
 
