@@ -1,0 +1,30 @@
+[{
+    "firstName": "Rack",
+    "lastName": "Jackon",
+    "gender": "male",
+    "age": 24,
+    "address": {
+        "streetAddress": "126",
+        "city": "San Jose",
+        "state": "CA",
+        "postalCode": "394221"
+    },
+    "phoneNumbers": [
+        { "type": "home", "number": "7383627627" }
+    ]
+},
+{
+    "firstName": "Mick",
+    "lastName": "Hutton",
+    "gender": "male",
+    "age": 34,
+    "address": {
+        "streetAddress": "46",
+        "city": "San Diego",
+        "state": "CA",
+        "postalCode": "91910"
+    },
+    "phoneNumbers": [
+        { "type": "work", "number": "7383635687" }
+    ]
+}]

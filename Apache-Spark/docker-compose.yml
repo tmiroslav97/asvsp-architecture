@@ -16,6 +16,8 @@ services:
       - PYSPARK_PYTHON=python3
     env_file:
       - .env
+    volumes:
+      - ./examples:/home/examples
     networks:
       - asvsp
 
