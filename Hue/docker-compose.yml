@@ -7,7 +7,7 @@ networks:
 
 services:
   postgres-hue-db:
-    image: postgres:latest
+    image: postgres:17.7
     container_name: postgres-hue-db
     restart: always
     environment:

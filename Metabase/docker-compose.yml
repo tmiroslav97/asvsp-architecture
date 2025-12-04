@@ -7,7 +7,7 @@ networks:
     
 services:
   metabase-postgres:
-    image: postgres:latest
+    image: postgres:17.7
     container_name: mb-postgres
     hostname: mb-postgres
     ports:
