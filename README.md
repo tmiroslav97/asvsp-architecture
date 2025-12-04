@@ -1,4 +1,4 @@
-# ASVSP
+# ASVSP (ZASTARJELO)
 
 ## Osnovne informacije
 
@@ -6,8 +6,9 @@ Projekat je napravljen za potrebe predmeta arhitekture sistema velikih skupova p
 
 **Napomena:**
 * zbog različitih okruženja u laboratoriji i na personalnim računarima održavaće se dvije odvojene grane
-    * main - za upotrebu na personalnim računarima
-    * classroom - za upotrebu na računarima u laboratoriji
+    * develop - za upotrebu na personalnim računarima
+    * classroom - za upotrebu na računarima u laboratoriji *ZASTARJELO*
+
 
 ## Klaster
 
