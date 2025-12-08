@@ -74,7 +74,7 @@ do
             echo ">> Starting up Kafka"
             docker compose -f Kafka/docker-compose.yml up -d
             sleep 15
-            cmd='bash -c "/opt/kafka/config/setupObjects.sh"'
+            cmd='bash -c "/home/config/setupObjects.sh"'
             docker exec -it kafka-broker1-1 $cmd
             ;;
         'data_generator')
