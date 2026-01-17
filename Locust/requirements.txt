@@ -1,2 +1,2 @@
-confluent-kafka==2.6.0
+confluent-kafka==2.13.0
 locust-plugins==4.5.3
