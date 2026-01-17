@@ -69,3 +69,4 @@ services:
     environment:
       KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: 'broker1:9092,broker2:9092'
       KAFKA_CLUSTERS_0_NAME: local-kafka-cluster
+
