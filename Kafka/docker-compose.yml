@@ -8,7 +8,7 @@ networks:
 
 services:
   broker1:
-    image: apache/kafka:latest
+    image: apache/kafka:4.1.1
     hostname: broker1
     ports:
       - 9092:9092
@@ -33,7 +33,7 @@ services:
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
 
   broker2:
-    image: apache/kafka:latest
+    image: apache/kafka:4.1.1
     hostname: broker2
     ports:
       - 9093:9092
