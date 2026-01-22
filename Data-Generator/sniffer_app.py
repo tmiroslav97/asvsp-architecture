@@ -61,7 +61,8 @@ class KafkaTopicWriter(Writer):
     def write(self, data: dict):
         logger.info(f"Writing data to Kafka topic: {self.topic_name}...")
         try:
-            self.producer.produce(topic=self.topic_name, value=json.dumps(data))
+            key=f"{data['packet_received_at']}#{data['src']}#{data['dst']}"
+            self.producer.produce(topic=self.topic_name, key=key, value=json.dumps(data))
         except Exception as e:
             logger.error("An error ocurred while sending data to Kafka topic")
             logger.exception(e)
@@ -129,6 +130,8 @@ def main():
 
         writer = JsonLinesFileWriter(DATA_GENERATOR_FILE_PATH, mode="a")
     elif DATA_GENERATOR_OUTPUT_MODE == 'Kafka':
+        # import time
+        # time.sleep(300)
         logger.info("Using Kafka output mode, bootstrap servers: {DATA_GENERATOR_KAFKA_BOOTSTRAP_SERVERS}, kafka topic: {DATA_GENERATOR_KAFKA_TOPIC}")
 
         writer = KafkaTopicWriter(bootstrap_servers= DATA_GENERATOR_KAFKA_BOOTSTRAP_SERVERS,topic_name=DATA_GENERATOR_KAFKA_TOPIC)

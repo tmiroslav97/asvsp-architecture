@@ -1,0 +1,23 @@
+version: "3"
+
+networks:
+  asvsp:
+    name: asvsp
+    external: true
+
+services:
+  consumer:
+    build:
+      context: .
+    networks:
+      - asvsp
+    volumes:
+      - .:/app
+      - ./logs:/app/logs
+    environment:
+      BOOTSTRAP_SERVERS: "broker1:9092"
+      KAFKA_RAW_TOPIC: "network_data"
+      LOG_LEVEL: "debug"
+    # command: ["java", "-cp","/usr/kafka-streams-demo-1.0-SNAPSHOT.jar:/app/lib/*", "com.example.kafka_streams_examples.CountByDestination"]
+    # command: ["java", "-cp","/usr/kafka-streams-demo-1.0-SNAPSHOT.jar:/app/lib/*", "com.example.kafka_streams_examples.BranchByProtocol"]
+    command: ["java", "-cp","/usr/kafka-streams-demo-1.0-SNAPSHOT.jar:/app/lib/*", "com.example.kafka_streams_examples.FilterByIP"]

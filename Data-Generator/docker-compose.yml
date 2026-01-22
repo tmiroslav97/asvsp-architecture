@@ -7,10 +7,10 @@ services:
       dockerfile: Dockerfile
     command: ["python", "sniffer_app.py"]
     environment:
-      DATA_GENERATOR_NETWORK_INTERFACES: "enp2s0,lo"  # Check available interfaces with ifconfig (Ubuntu) or ipconfig (Windows)
-      DATA_GENERATOR_PACKET_COUNT: "500"
+      DATA_GENERATOR_NETWORK_INTERFACES: "eth0" #'Wi-Fi' # "enp2s0,lo"  # Check available interfaces with ifconfig (Ubuntu) or ipconfig (Windows)
+      DATA_GENERATOR_PACKET_COUNT: "50000"
       DATA_GENERATOR_OUTPUT_MODE: "Kafka" # Kafka / File
-      DATA_GENERATOR_KAFKA_BOOTSTRAP_SERVERS: "localhost:29092,localhost:29093"  # Used only for Kafka output mode
+      DATA_GENERATOR_KAFKA_BOOTSTRAP_SERVERS: "127.0.0.1:29092,127.0.0.1:29093"  # Used only for Kafka output mode
       DATA_GENERATOR_KAFKA_TOPIC: "network_data"  # Used only for Kafka output mode
       DATA_GENERATOR_FILE_PATH: "./output/packets.jsonl"  # Used only for File output mode
     network_mode: "host"
