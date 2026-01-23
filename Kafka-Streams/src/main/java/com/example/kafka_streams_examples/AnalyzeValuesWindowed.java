@@ -55,11 +55,14 @@ public class AnalyzeValuesWindowed {
             }
         }).filter((k, v) -> v != null);
 
-        TimeWindows slidingWindow = TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(10));
+        TimeWindows hoppingWindow = TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(10)).advanceBy(Duration.ofSeconds(15));
+        // TimeWindows tumblingWindow = TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(10));
+        // SessionWindows sessionWindow = SessionWindows.ofInactivityGapAndGrace(Duration.ofMinutes(5), Duration.ofMinutes(1));
+        // SlidingWindows slidingWindow = SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofMinutes(30), Duration.ofMinutes(5));
 
         KTable<Windowed<String>, String> aggregatedStats = hashRates
             .groupBy((key, value) -> "MINER_STATS", Grouped.with(Serdes.String(), Serdes.Double()))
-            .windowedBy(slidingWindow)
+            .windowedBy(hoppingWindow)
             .aggregate(
                 () -> "0.0,0", // Initializer: "sum,count"
                 (key, newValue, aggregate) -> {
