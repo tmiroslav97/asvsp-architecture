@@ -18,7 +18,7 @@ def spark_transform():
     transform = SparkSubmitOperator(
         task_id='transform',
         conn_id='SPARK_CONNECTION',
-        application='/example.py',
+        application='/files/jobs/example.py',
         verbose=True
     )
 

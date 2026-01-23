@@ -49,18 +49,18 @@ def hive_transform():
         except Exception as e:
             print(e)
 
-    hive_server_ops = SSHOperator(
-        task_id="hive_server_task",
-        ssh_conn_id="hive_server_ssh_conn",
-        command="/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e 'CREATE TABLE pokes2 (foo INT, bar STRING);'",
-        cmd_timeout=300,
-        ssh_hook=SSHHook(
-            remote_host="hive-server",
-            username="root",
-            password="asvsp",
-            banner_timeout=10,
-        ),
-    )
+    # hive_server_ops = SSHOperator(
+    #     task_id="hive_server_task",
+    #     ssh_conn_id="hive_server_ssh_conn",
+    #     command="/opt/hive/bin/beeline -u jdbc:hive2://localhost:10000 -e 'CREATE TABLE pokes2 (foo INT, bar STRING);'",
+    #     cmd_timeout=300,
+    #     ssh_hook=SSHHook(
+    #         remote_host="hive-server",
+    #         username="root",
+    #         password="asvsp",
+    #         banner_timeout=10,
+    #     ),
+    # )
 
     create_table() >> load_data() >> query_table()
 
