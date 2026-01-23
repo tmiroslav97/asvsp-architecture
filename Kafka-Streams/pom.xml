@@ -61,11 +61,11 @@
                     <phase>package</phase>
                     <goals><goal>copy-dependencies</goal></goals>
                     <configuration>
-                        <outputDirectory>./lib</outputDirectory>
+                        <outputDirectory>/usr/target/libraries</outputDirectory>
                     </configuration>
                     </execution>
                 </executions>
-                </plugin>
+            </plugin>
         </plugins>
     </build>
 </project>

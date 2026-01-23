@@ -8,4 +8,4 @@ RUN mvn -f /usr/pom.xml clean package -o
 
 FROM eclipse-temurin:21-jre
 COPY --from=maven_build /usr/target /usr
-CMD ["java", "-cp", "/usr/kafka-streams-demo-1.0-SNAPSHOT.jar:lib/*", "com.example.kafka_streams_examples.BranchByProtocol"]
+CMD ["java", "-cp", "/usr/kafka-streams-demo-1.0-SNAPSHOT.jar:/usr/target/libraries/*", "com.example.kafka_streams_examples.BranchByProtocol"]

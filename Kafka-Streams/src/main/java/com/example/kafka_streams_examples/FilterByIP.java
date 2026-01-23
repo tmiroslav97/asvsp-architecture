@@ -28,8 +28,8 @@ public class FilterByIP {
         KStream<String, String> filteredPackets = input.filter((key, jsonString) -> {
             try {
                 JsonNode root = MAPPER.readTree(jsonString);
-                String ipDst = root.path("payload").path("dst").asText();
-                return !ipDst.equals("192.168.65.1");
+                String ipDst = root.path("payload").path("src").asText();
+                return ipDst.equals("192.168.68.105");
             } catch (Exception e) {
                 return false;
             }
