@@ -1,4 +1,17 @@
-version: "3"
+name: hadoop
+
+x-hadoop: &hadoop
+  image: asvsp-hadoop:3.5.0
+  build: .
+  networks:
+    - asvsp
+
+x-datanode-health: &datanode-health
+  healthcheck:
+    test: ["CMD-SHELL", "hdfs dfsadmin -report | grep -q 'Live datanodes (2)'"]
+    interval: 5s
+    timeout: 10s
+    retries: 30
 
 networks:
   asvsp:
@@ -7,92 +20,115 @@ networks:
 
 services:
   namenode:
-    #image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
-    build: .
+    <<: *hadoop
     container_name: namenode
+    hostname: namenode
+    command: ["hdfs", "namenode"]
     ports:
-      - 9870:9870
-      - 9000:9000
+      - "9870:9870"
+      - "9000:9000"
     volumes:
       - ./data:/data
       - hadoop_namenode:/hadoop/dfs/name
     environment:
-      - CLUSTER_NAME=test
-    env_file:
-      - .env
-    networks:
-      - asvsp
+      # The starter formats on first run; `current` is created by formatting.
+      ENSURE_NAMENODE_DIR: /hadoop/dfs/name/current
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z namenode 9000"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
 
   datanode1:
-    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    <<: [*hadoop, *datanode-health]
     container_name: datanode1
+    hostname: datanode1
+    command: ["hdfs", "datanode"]
     volumes:
       - hadoop_datanode1:/hadoop/dfs/data
-    environment:
-      SERVICE_PRECONDITION: "namenode:9870"
-    env_file:
-      - .env
-    networks:
-      - asvsp
+    depends_on:
+      namenode:
+        condition: service_healthy
 
   datanode2:
-    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    <<: [*hadoop, *datanode-health]
     container_name: datanode2
+    hostname: datanode2
+    command: ["hdfs", "datanode"]
     volumes:
       - hadoop_datanode2:/hadoop/dfs/data
-    environment:
-      SERVICE_PRECONDITION: "namenode:9870"
-    env_file:
-      - .env
-    networks:
-      - asvsp
+    depends_on:
+      namenode:
+        condition: service_healthy
 
   resourcemanager:
-    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
+    <<: *hadoop
     container_name: resourcemanager
+    hostname: resourcemanager
+    command:
+      - /bin/bash
+      - -ec
+      - |
+        until hdfs dfsadmin -safemode get | grep -q 'Safe mode is OFF'; do sleep 2; done
+        exec yarn resourcemanager
     ports:
-      - 8088:8088
-    environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode1:9864 datanode2:9864"
-    env_file:
-      - .env
-    networks:
-      - asvsp
+      - "8088:8088"
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z resourcemanager 8088"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+    depends_on:
+      namenode:
+        condition: service_healthy
+      datanode1:
+        condition: service_healthy
+      datanode2:
+        condition: service_healthy
 
   nodemanager1:
-    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    <<: *hadoop
     container_name: nodemanager1
-    environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode1:9864 resourcemanager:8088"
-    env_file:
-      - .env
-    networks:
-      - asvsp
+    hostname: nodemanager1
+    command: ["yarn", "nodemanager"]
+    depends_on:
+      namenode:
+        condition: service_healthy
+      datanode1:
+        condition: service_healthy
+      resourcemanager:
+        condition: service_healthy
 
   nodemanager2:
-    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    <<: *hadoop
     container_name: nodemanager2
-    environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode2:9864 resourcemanager:8088"
-    env_file:
-      - .env
-    networks:
-      - asvsp
-  
+    hostname: nodemanager2
+    command: ["yarn", "nodemanager"]
+    depends_on:
+      namenode:
+        condition: service_healthy
+      datanode2:
+        condition: service_healthy
+      resourcemanager:
+        condition: service_healthy
+
   historyserver:
-    image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
+    <<: *hadoop
     container_name: historyserver
-    environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode1:9864 resourcemanager:8088"
+    hostname: historyserver
+    command: ["yarn", "timelineserver"]
     ports:
-      - 8188:8188
+      - "8188:8188"
     volumes:
       - hadoop_historyserver:/hadoop/yarn/timeline
-    env_file:
-      - .env
-    networks:
-      - asvsp
-  
+    depends_on:
+      namenode:
+        condition: service_healthy
+      datanode1:
+        condition: service_healthy
+      resourcemanager:
+        condition: service_healthy
+
 volumes:
   hadoop_namenode:
   hadoop_datanode1:

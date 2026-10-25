@@ -1,5 +1,6 @@
 #!/bin/bash
-docker exec -it resourcemanager bash -c "rm -rf /zadatak1"
-docker cp . resourcemanager:/zadatak1/
-docker exec -it resourcemanager bash -c "chmod +x /zadatak1/map-reduce.sh && /zadatak1/map-reduce.sh"
-# docker exec -it resourcemanager bash -c "hdfs dfs -rm -r -f /units*"
+set -euo pipefail
+TASK_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+docker exec resourcemanager rm -rf /task1
+docker cp "$TASK_DIR/." resourcemanager:/task1
+docker exec resourcemanager bash -lc 'chmod +x /task1/java/map-reduce.sh && /task1/java/map-reduce.sh'

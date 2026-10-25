@@ -1,13 +1,13 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 import sys
 
 current_node = ""
-current_dist = sys.maxint
+current_dist = sys.maxsize
 current_path = ""
 current_page = ""
 path = "_"
-dist = sys.maxint
+dist = sys.maxsize
 is_node = True
 
 for line in sys.stdin:
@@ -19,7 +19,7 @@ for line in sys.stdin:
     try:
         path = tokens[2]
         dist = int(tokens[1])
-        dist = sys.maxint if dist == -1 else dist
+        dist = sys.maxsize if dist == -1 else dist
         is_node = True
     except ValueError:
         prev_page = None if is_node else page
@@ -28,7 +28,7 @@ for line in sys.stdin:
         page = tokens[2:]
         path = page[0]
         dist = int(page[1])
-        dist = sys.maxint if dist == -1 else dist
+        dist = sys.maxsize if dist == -1 else dist
     #print(is_node)
     if current_node == node:
         if dist < current_dist:
@@ -39,7 +39,7 @@ for line in sys.stdin:
             #print(current_node, node, is_node)
             current_page = page if is_node else prev_page
             current_page[0] = current_path
-            current_dist = -1 if current_dist == sys.maxint else current_dist
+            current_dist = -1 if current_dist == sys.maxsize else current_dist
             current_page[1] = str(current_dist)
 
             print ("%s %s" % (current_node, " ".join(current_page)))
@@ -52,7 +52,7 @@ for line in sys.stdin:
 if current_node == node:
     current_page = page
     current_page[0] = current_path
-    current_dist = -1 if current_dist == sys.maxint else current_dist
+    current_dist = -1 if current_dist == sys.maxsize else current_dist
     current_page[1] = str(current_dist)
 
     print ("%s %s" % (current_node, " ".join(current_page)))

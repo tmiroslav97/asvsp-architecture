@@ -1,21 +1,26 @@
 #!/bin/bash
-cd example1
+set -euo pipefail
+
+cd /example1
 
 printf "\nCOPY FILE TO HDFS\n"
 
+hdfs dfs -rm -r -f /units
 hdfs dfs -put sample.txt /units
 
 printf "\nSET CLASSPATHS\n"
 
-export CLASSPATH="$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-core-$HADOOP_VERSION.jar:$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-common-$HADOOP_VERSION.jar:$HADOOP_HOME/share/hadoop/common/hadoop-common-$HADOOP_VERSION.jar:~/example1/*:$HADOOP_HOME/lib/*"
+HADOOP_HOME="${HADOOP_HOME:-${HADOOP_PREFIX:-$(cd "$(dirname "$(command -v hadoop)")/.." && pwd)}}"
 
 printf "\nCOMPILE JAVA\n"
 
-javac -d . ProcessUnits.java 
+rm -rf build
+mkdir build
+javac -cp "$(hadoop classpath --glob)" -d build ProcessUnits.java
 
 printf "\nBUILD JAR\n"
 
-jar cfm ProcessUnits.jar Manifest.txt *.class
+jar cfm ProcessUnits.jar Manifest.txt -C build .
 
 printf "\nRUN MAP-REDUCE\n"
 

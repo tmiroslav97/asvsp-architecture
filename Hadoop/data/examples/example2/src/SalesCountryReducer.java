@@ -1,24 +1,17 @@
 package sales_country;
 
 import java.io.IOException;
-import java.util.*;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapred.*;
+import org.apache.hadoop.mapreduce.Reducer;
 
-public class SalesCountryReducer extends MapReduceBase implements Reducer<Text, IntWritable, Text, IntWritable> {
-
-    public void reduce(Text tKey, Iterator<IntWritable> values, OutputCollector<Text, IntWritable> output,
-            Reporter reporter) throws IOException {
-        Text key = tKey;
-        int frequencyForCountry = 0;
-        while (values.hasNext()) {
-            // replace type of value with the actual type of our value
-            IntWritable value = (IntWritable) values.next();
-            frequencyForCountry += value.get();
-
-        }
-        output.collect(key, new IntWritable(frequencyForCountry));
+public class SalesCountryReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+    @Override
+    public void reduce(Text key, Iterable<IntWritable> values, Context context)
+            throws IOException, InterruptedException {
+        int total = 0;
+        for (IntWritable value : values) total += value.get();
+        context.write(key, new IntWritable(total));
     }
 }

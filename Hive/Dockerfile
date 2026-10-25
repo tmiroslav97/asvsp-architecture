@@ -1,15 +1,20 @@
-FROM bde2020/hive:2.3.2-postgresql-metastore
+FROM apache/hive:4.2.1
 
-RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
+# Keep the SSH endpoint used by scripts/cluster_up.sh and add the JDBC driver
+# required by the upstream image when PostgreSQL is used as the metastore.
+USER root
+RUN microdnf install -y openssh-server \
+    && microdnf clean all \
+    && mkdir -p /var/run/sshd \
+    && rm -f /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub \
+    && sed -ri 's/^[[:space:]]*#?[[:space:]]*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config \
+    && sed -ri 's/^[[:space:]]*#?[[:space:]]*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config \
+    && echo 'root:asvsp' | chpasswd \
+    && curl --fail --location --retry 3 --output /opt/hive/lib/postgres.jar \
+      https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.8/postgresql-42.7.8.jar
 
-RUN apt-get update && apt-get install -y openssh-server
-RUN mkdir /var/run/sshd
-
-RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
-RUN echo '# Hadoop config\nexport HADOOP_HOME=/opt/hadoop-2.7.4' >> /opt/hive/bin/hive-config.sh \
-    && echo 'export HADOOP_PREFIX=/opt/hadoop-2.7.4' >> /opt/hive/bin/hive-config.sh \
-    && echo 'export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/' >> /opt/hive/bin/hive-config.sh
-RUN echo "root:asvsp" | chpasswd
+COPY start-with-sshd.sh /usr/local/bin/start-with-sshd.sh
+RUN chmod 0755 /usr/local/bin/start-with-sshd.sh
 
 EXPOSE 22
+ENTRYPOINT ["/usr/local/bin/start-with-sshd.sh"]

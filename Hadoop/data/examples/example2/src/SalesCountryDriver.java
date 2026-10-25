@@ -1,43 +1,28 @@
 package sales_country;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapred.*;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class SalesCountryDriver {
-    public static void main(String[] args) {
-        JobClient myClient = new JobClient();
-        // Create a configuration object for the job
-        JobConf jobConf = new JobConf(SalesCountryDriver.class);
-
-        // Set a name of the Job
-        jobConf.setJobName("SalePerCountry");
-
-        // Specify data type of output key and value
-        jobConf.setOutputKeyClass(Text.class);
-        jobConf.setOutputValueClass(IntWritable.class);
-
-        // Specify names of Mapper and Reducer Class
-        jobConf.setMapperClass(SalesMapper.class);
-        jobConf.setReducerClass(SalesCountryReducer.class);
-
-        // Specify formats of the data type of Input and output
-        jobConf.setInputFormat(TextInputFormat.class);
-        jobConf.setOutputFormat(TextOutputFormat.class);
-
-        // Set input and output directories using command line arguments,
-        // arg[0] = name of input directory on HDFS, and arg[1] = name of output
-        // directory to be created to store the output file.
-
-        FileInputFormat.setInputPaths(jobConf, new Path(args[0]));
-        FileOutputFormat.setOutputPath(jobConf, new Path(args[1]));
-
-        myClient.setConf(jobConf);
-        try {
-            // Run the job
-            JobClient.runJob(jobConf);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static void main(String[] args) throws Exception {
+        if (args.length != 2) {
+            System.err.println("Usage: SalesCountryDriver <input> <output>");
+            System.exit(2);
         }
+        Job job = Job.getInstance(new Configuration(), "sales_per_country");
+        job.setJarByClass(SalesCountryDriver.class);
+        job.setMapperClass(SalesMapper.class);
+        job.setCombinerClass(SalesCountryReducer.class);
+        job.setReducerClass(SalesCountryReducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }
