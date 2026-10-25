@@ -1,4 +1,4 @@
-version: "3"
+name: hue
 
 networks:
   asvsp:
@@ -11,17 +11,23 @@ services:
     container_name: postgres-hue-db
     restart: always
     environment:
-      - POSTGRES_USER=hue
-      - POSTGRES_PASSWORD=hue
+      POSTGRES_DB: postgres
+      POSTGRES_USER: hue
+      POSTGRES_PASSWORD: hue
     ports:
       - "5432:5432"
     volumes:
       - postgres-hue-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hue -d postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
     networks:
       - asvsp
 
   hue:
-    # image: gethue/hue:latest
+    image: asvsp-hue:20260611-140101
     build: .
     container_name: hue
     hostname: hue
@@ -32,7 +38,14 @@ services:
     # volumes:
       # - ./config:/usr/share/hue/desktop/conf
     depends_on:
-      - postgres-hue-db
+      postgres-hue-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --show-error http://localhost:8888/"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
     networks:
       - asvsp
 

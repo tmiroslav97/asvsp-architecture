@@ -1,41 +1,80 @@
-version: "3"
+name: hive
 
 networks:
   asvsp:
     name: asvsp
     external: true
 
+x-hive: &hive
+  image: asvsp-hive:4.2.1
+  build: .
+
 services:
   hive-metastore-postgresql:
-    image: bde2020/hive-metastore-postgresql:2.3.0
+    image: postgres:17.7
     container_name: hive-metastore-postgresql
+    environment:
+      POSTGRES_DB: metastore
+      POSTGRES_USER: hive
+      POSTGRES_PASSWORD: hive
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hive -d metastore"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
     networks:
       - asvsp
     
   hive-metastore:
-    image: bde2020/hive:2.3.2-postgresql-metastore
+    <<: *hive
     container_name: hive-metastore
-    env_file:
-      - .env
-    command: /opt/hive/bin/hive --service metastore
     environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode1:9864 datanode2:9864 hive-metastore-postgresql:5432"
+      SERVICE_NAME: metastore
+      DB_DRIVER: postgres
+      HIVE_CUSTOM_CONF_DIR: /hive_custom_conf
+      SERVICE_OPTS: >-
+        -Djavax.jdo.option.ConnectionDriverName=org.postgresql.Driver
+        -Djavax.jdo.option.ConnectionURL=jdbc:postgresql://hive-metastore-postgresql:5432/metastore
+        -Djavax.jdo.option.ConnectionUserName=hive
+        -Djavax.jdo.option.ConnectionPassword=hive
+    volumes:
+      - ./config:/hive_custom_conf:ro
     ports:
       - "9083:9083"
+    depends_on:
+      hive-metastore-postgresql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/9083'"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
     networks:
       - asvsp
 
   hive-server:
-    #image: bde2020/hive:2.3.2-postgresql-metastore
-    build: .
+    <<: *hive
     container_name: hive-server
-    env_file:
-      - .env
     environment:
-      HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
-      SERVICE_PRECONDITION: "hive-metastore:9083"
+      SERVICE_NAME: hiveserver2
+      IS_RESUME: "true"
+      HIVE_CUSTOM_CONF_DIR: /hive_custom_conf
+      SERVICE_OPTS: >-
+        -Dhive.metastore.uris=thrift://hive-metastore:9083
+    volumes:
+      - ./config:/hive_custom_conf:ro
     ports:
       - "10000:10000"
       - "10002:10002"
+    depends_on:
+      hive-metastore:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/10000'"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 40s
     networks:
       - asvsp

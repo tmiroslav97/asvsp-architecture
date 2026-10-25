@@ -1,70 +1,61 @@
-import java.util.*;
-
-import java.io.IOException;
 import java.io.IOException;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.conf.*;
-import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapred.*;
-import org.apache.hadoop.util.*;
+import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class CalculateMean {
-    private static final String KEY = "M";
+    private static final Text KEY = new Text("M");
 
-    // Mapper class
-    public static class E_EMapper extends MapReduceBase implements Mapper<LongWritable, /* Input key Type */
-            Text, /* Input value Type */
-            Text, /* Output key Type */
-            Text> /* Output value Type */
-    {
-
-        // Map function
-        public void map(LongWritable key, Text value, OutputCollector<Text, Text> output, Reporter reporter)
-                throws IOException {
-            String line = value.toString();
-            String out = line.split(",")[1] + ",1";
-            output.collect(new Text(KEY), new Text(out));
-        }
-    }
-
-    // Reducer class
-    public static class E_EReduce extends MapReduceBase implements Reducer<Text, Text, Text, Text> {
-
-        // Reduce function
-        public void reduce(Text key, Iterator<Text> values, OutputCollector<Text, Text> output,
-                Reporter reporter) throws IOException {
-            double sum = .0;
-            int count = 0;
-
-            while (values.hasNext()) {
-                String[] words = values.next().toString().split(",");
-                sum += Double.parseDouble(words[0]);
-                count += Integer.parseInt(words[1]);
+    public static class MeanMapper extends Mapper<LongWritable, Text, Text, DoubleWritable> {
+        @Override
+        public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+            String[] columns = value.toString().split(",");
+            if (columns.length < 2) return;
+            try {
+                context.write(KEY, new DoubleWritable(Double.parseDouble(columns[1])));
+            } catch (NumberFormatException ignored) {
+                // Ignore headers and malformed records.
             }
-
-            String out = sum + "," + count;
-            output.collect(new Text(KEY), new Text(out));
-
         }
     }
 
-    // Main function
-    public static void main(String args[]) throws Exception {
-        JobConf conf = new JobConf(CalculateMean.class);
+    public static class MeanReducer extends Reducer<Text, DoubleWritable, Text, Text> {
+        @Override
+        public void reduce(Text key, Iterable<DoubleWritable> values, Context context)
+                throws IOException, InterruptedException {
+            double sum = 0.0;
+            long count = 0;
+            for (DoubleWritable value : values) {
+                sum += value.get();
+                count++;
+            }
+            if (count > 0) context.write(key, new Text(sum + "," + count));
+        }
+    }
 
-        conf.setJobName("calculate_mean");
-        conf.setOutputKeyClass(Text.class);
-        conf.setOutputValueClass(Text.class);
-        conf.setMapperClass(E_EMapper.class);
-        conf.setCombinerClass(E_EReduce.class);
-        conf.setReducerClass(E_EReduce.class);
-        conf.setInputFormat(TextInputFormat.class);
-        conf.setOutputFormat(TextOutputFormat.class);
-
-        FileInputFormat.setInputPaths(conf, new Path(args[0]));
-        FileOutputFormat.setOutputPath(conf, new Path(args[1]));
-
-        JobClient.runJob(conf);
+    public static void main(String[] args) throws Exception {
+        if (args.length != 2) {
+            System.err.println("Usage: CalculateMean <input> <output>");
+            System.exit(2);
+        }
+        Job job = Job.getInstance(new Configuration(), "calculate_mean");
+        job.setJarByClass(CalculateMean.class);
+        job.setMapperClass(MeanMapper.class);
+        job.setReducerClass(MeanReducer.class);
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(DoubleWritable.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(Text.class);
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }

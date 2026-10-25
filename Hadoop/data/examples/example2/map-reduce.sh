@@ -1,22 +1,27 @@
 #!/bin/bash
-cd example2
+set -euo pipefail
+
+cd /example2
 
 printf "\nCOPY FILE TO HDFS\n"
 
 hdfs dfs -rm -r -f /sales_out/
+hdfs dfs -rm -r -f /sales
 hdfs dfs -put SalesJan2009.csv /sales
 
 printf "\nSET CLASSPATHS\n"
 
-export CLASSPATH="$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-core-$HADOOP_VERSION.jar:$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-common-$HADOOP_VERSION.jar:$HADOOP_HOME/share/hadoop/common/hadoop-common-$HADOOP_VERSION.jar:~/example2/*:$HADOOP_HOME/lib/*"
+HADOOP_HOME="${HADOOP_HOME:-${HADOOP_PREFIX:-$(cd "$(dirname "$(command -v hadoop)")/.." && pwd)}}"
 
 printf "\nCOMPILE JAVA\n"
 
-javac -d . src/*.java
+rm -rf build
+mkdir build
+javac -cp "$(hadoop classpath --glob)" -d build src/*.java
 
 printf "\nBUILD JAR\n"
 
-jar cfm ProductSalePerCountry.jar src/Manifest.txt sales_country/*.class
+jar cfm ProductSalePerCountry.jar src/Manifest.txt -C build .
 
 printf "\nRUN MAP-REDUCE\n"
 

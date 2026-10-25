@@ -1,8 +1,12 @@
 #!/bin/bash
+set -euo pipefail
 
 DIR=/shpth
+HADOOP_HOME="${HADOOP_HOME:-${HADOOP_PREFIX:-$(cd "$(dirname "$(command -v hadoop)")/.." && pwd)}}"
+STREAMING_JAR=$(find "$HADOOP_HOME/share/hadoop/tools/lib" -maxdepth 1 -name 'hadoop-streaming-*.jar' -print -quit)
+: "${STREAMING_JAR:?Hadoop Streaming JAR not found}"
 
-cd $DIR
+cd "$DIR"
 
 printf "\nCOPY FILE TO HDFS\n"
 
@@ -15,21 +19,19 @@ printf "\nSETTING EXECUTEABLE PY\n"
 
 chmod a+x *.py
 
-cd $HADOOP_PREFIX
-
 for i in 1 2 3 4
 do
     hdfs dfs -rm -r -f "/shpth_$(($i+1))/"
 
     printf "\nRUN HADOOP-STREAMING\n"
 
-    mapred streaming \
+    hadoop jar "$STREAMING_JAR" \
         -input "/shpth_$i/" \
         -output "/shpth_$(($i+1))/" \
-        -mapper mapper.py \
-        -reducer reducer.py \
-        -file $DIR/mapper.py \
-        -file $DIR/reducer.py > /dev/null
+        -file "$DIR/mapper.py" \
+        -file "$DIR/reducer.py" \
+        -mapper "python3 mapper.py" \
+        -reducer "python3 reducer.py" > /dev/null
 
     printf "\nRESULTS $i\n"
 

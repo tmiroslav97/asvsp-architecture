@@ -1,9 +1,10 @@
-# /bin/usr/python
+#!/usr/bin/env python3
 
 import random
 import string
+import os
 
-ROWS = int(1e6)
+ROWS = int(os.environ.get("ROWS", "1000000"))
 
 
 def randomString(stringLength=10):
@@ -13,7 +14,7 @@ def randomString(stringLength=10):
 
 
 def main():
-    with open('sample.csv', 'w') as f:
+    with open(os.environ.get("OUTPUT_FILE", "sample.csv"), 'w') as f:
         for _ in range(ROWS):
             f.write("{},{},{}\n".format(randomString(),
                                        random.uniform(7.5, 9.5), randomString()))
