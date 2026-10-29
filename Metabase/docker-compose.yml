@@ -1,5 +1,3 @@
-version: "3"
-
 networks:
   asvsp:
     name: asvsp
@@ -18,19 +16,24 @@ services:
       POSTGRES_PASSWORD: metabasepass
     volumes:
       - metabase-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U metabase -d metabasedb"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
     networks:
       - asvsp
 
   metabase:
-    image: metabase/metabase:latest
+    image: metabase/metabase:v0.65.2.2
     container_name: metabase
     hostname: metabase
-    volumes:
-      - ./data:/dev/random:ro
     ports:
       - 3000:3000
     depends_on:
-      - metabase-postgres
+      metabase-postgres:
+        condition: service_healthy
     environment:
       MB_DB_TYPE: postgres
       MB_DB_DBNAME: metabasedb
@@ -39,10 +42,12 @@ services:
       MB_DB_PASS: metabasepass
       MB_DB_HOST: mb-postgres
     healthcheck:
-      test: curl --fail -I http://localhost:3000/api/health || exit 1
+      test: ["CMD-SHELL", "curl --fail --silent http://localhost:3000/api/health"]
       interval: 15s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 60s
+    restart: unless-stopped
     networks:
       - asvsp
 
