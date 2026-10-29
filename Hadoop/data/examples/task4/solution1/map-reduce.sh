@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-DIR=/task4
+DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 HADOOP_HOME="${HADOOP_HOME:-${HADOOP_PREFIX:-$(cd "$(dirname "$(command -v hadoop)")/.." && pwd)}}"
 STREAMING_JAR=$(find "$HADOOP_HOME/share/hadoop/tools/lib" -maxdepth 1 -name 'hadoop-streaming-*.jar' -print -quit)
 : "${STREAMING_JAR:?Hadoop Streaming JAR not found}"

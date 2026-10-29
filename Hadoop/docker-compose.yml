@@ -28,7 +28,6 @@ services:
       - "9870:9870"
       - "9000:9000"
     volumes:
-      - ./data:/data
       - hadoop_namenode:/hadoop/dfs/name
     environment:
       # The starter formats on first run; `current` is created by formatting.
