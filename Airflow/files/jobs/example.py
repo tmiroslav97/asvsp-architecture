@@ -13,8 +13,12 @@ spark = SparkSession \
 
 quiet_logs(spark)
 
-# spark is an existing SparkSession
-df = spark.read.json("file:///spark/examples/src/main/resources/people.json")
+df = spark.createDataFrame([
+    ("Alice", 28),
+    ("Bob", 35),
+    ("Carol", 21),
+], ["name", "age"])
+
 # Displays the content of the DataFrame to stdout
 df.show()
 

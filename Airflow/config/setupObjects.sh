@@ -15,7 +15,7 @@ airflow connections add 'AIRFLOW_DB_CONNECTION' \
 
 airflow connections add 'HIVE_CONNECTION' \
     --conn-json '{
-        "conn_type": "hive_cli",
+        "conn_type": "hiveserver2",
         "host": "hive-server",
         "port": 10000,
         "schema": "default"
@@ -26,6 +26,14 @@ airflow connections add 'SPARK_CONNECTION' \
         "conn_type": "spark",
         "host": "spark://spark-master",
         "port": 7077
+    }'
+
+airflow connections add 'HDFS_CONNECTION' \
+    --conn-json '{
+        "conn_type": "webhdfs",
+        "login": "hadoop",
+        "host": "namenode",
+        "port": 9870
     }'
 
 airflow connections add 'LOCAL_FS_FILES' \
