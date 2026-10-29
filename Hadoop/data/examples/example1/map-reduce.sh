@@ -1,7 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-
-cd /example1
+cd /opt/hadoop/example1
 
 printf "\nCOPY FILE TO HDFS\n"
 
