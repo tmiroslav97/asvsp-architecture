@@ -18,7 +18,7 @@ quiet_logs(spark)
 
 sc = spark.sparkContext
 
-rdd = sc.textFile("/spark/examples/src/main/resources/people.csv")
+rdd = sc.textFile("file:///spark/examples/src/main/resources/people.csv")
 rdd2 = rdd.map(lambda line: Row(line.split(";")))
 rdd3 = rdd2.cache()
 print(rdd3.count())
