@@ -1,6 +1,6 @@
-apache-airflow-providers-common-sql[openlineage] == 1.8.0
-apache-airflow-providers-celery == 3.4.1
-apache-airflow-providers-postgres == 5.7.1
-apache-airflow-providers-apache-spark == 4.6.0
-apache-airflow-providers-apache-hive == 6.4.0
-apache-airflow-providers-ssh == 3.10.0
+apache-airflow-providers-apache-hdfs==4.13.0
+apache-airflow-providers-apache-hive==9.6.2
+apache-airflow-providers-apache-spark==6.3.2
+apache-airflow-providers-celery==3.24.0
+apache-airflow-providers-postgres==7.0.2
+pyspark==4.2.0
